@@ -83,7 +83,7 @@ app.post("/api/contact", async (req, res) => {
     //   text: `Hi ${name},\n\nThanks for contacting us! We'll get back to you soon.\n\n— Team`,
     // });
 
-    return res.json({ ok: true, message: "Message sent successfully." });
+    return res.json({ ok: true, message: "Message sent successfully. we will get back to you shortly." });
   } catch (err) {
     console.error("Email error:", err);
     return res.status(500).json({ ok: false, message: "Failed to send message." });
@@ -95,3 +95,4 @@ app.get("/", (_req, res) => res.send("Contact API is running."));
 
 const PORT = Number(process.env.PORT || 4000);
 app.listen(PORT, () => console.log(`Server listening on http://localhost:${PORT}`));
+

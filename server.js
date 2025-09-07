@@ -18,7 +18,10 @@ app.use((req, res, next) => {
   const recent = entry.filter((t) => now - t < WINDOW_MS);
   recent.push(now);
   hits.set(ip, recent);
-  if (recent.length > MAX_REQS) return res.status(429).json({ ok: false, message: "Too many requests, please try later." });
+  if (recent.length > MAX_REQS)
+    return res
+      .status(429)
+      .json({ ok: false, message: "Too many requests, please try later." });
   next();
 });
 
@@ -35,8 +38,7 @@ const transporter = nodemailer.createTransport({
 
 // Quick email validity check
 const isEmail = (e) =>
-  typeof e === "string" &&
-  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.trim());
+  typeof e === "string" && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e.trim());
 
 app.post("/api/contact", async (req, res) => {
   try {
@@ -50,10 +52,14 @@ app.post("/api/contact", async (req, res) => {
       return res.status(400).json({ ok: false, message: "Name is required." });
     }
     if (!contact || String(contact).trim().length < 5) {
-      return res.status(400).json({ ok: false, message: "Contact is required." });
+      return res
+        .status(400)
+        .json({ ok: false, message: "Contact is required." });
     }
     if (!message || String(message).trim().length < 2) {
-      return res.status(400).json({ ok: false, message: "Message is required." });
+      return res
+        .status(400)
+        .json({ ok: false, message: "Message is required." });
     }
 
     // Compose mail to your inbox
@@ -67,9 +73,9 @@ app.post("/api/contact", async (req, res) => {
     `;
 
     await transporter.sendMail({
-      from: process.env.INBOX_FROM || process.env.SMTP_USER,           // sender identity
-      to: process.env.INBOX_TO,                                       // your inbox
-      replyTo: `"${String(name).trim()}" <${String(email).trim()}>`,  // so you can reply directly
+      from: process.env.INBOX_FROM || process.env.SMTP_USER, // sender identity
+      to: process.env.INBOX_TO, // your inbox
+      replyTo: `"${String(name).trim()}" <${String(email).trim()}>`, // so you can reply directly
       subject: `Kidz Montessori Academy - Contact Form: ${String(name).trim()}`,
       text: `Name: ${name}\nEmail: ${email}\nContact: ${contact}\n\nMessage:\n${message}`,
       html,
@@ -83,10 +89,15 @@ app.post("/api/contact", async (req, res) => {
     //   text: `Hi ${name},\n\nThanks for contacting us! We'll get back to you soon.\n\n— Team`,
     // });
 
-    return res.json({ ok: true, message: "Message sent successfully. we will get back to you shortly." });
+    return res.json({
+      ok: true,
+      message: "Message sent successfully. we will get back to you shortly.",
+    });
   } catch (err) {
     console.error("Email error:", err);
-    return res.status(500).json({ ok: false, message: "Failed to send message." });
+    return res
+      .status(500)
+      .json({ ok: false, message: "Failed to send message." });
   }
 });
 
@@ -94,5 +105,6 @@ app.post("/api/contact", async (req, res) => {
 app.get("/", (_req, res) => res.send("Contact API is running."));
 
 const PORT = Number(process.env.PORT || 4000);
-app.listen(PORT, () => console.log(`Server listening on http://localhost:${PORT}`));
-
+app.listen(PORT, () =>
+  console.log(`Server listening on http://localhost:${PORT}`)
+);
